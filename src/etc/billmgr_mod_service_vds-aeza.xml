@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mgrdata>
+  <metadata name="vds-aeza" type="list" key="id" keyname="name">
+    <include name="service"/>
+    <toolbar>
+      <toolgrp name="edit" first="yes">
+        <toolbtn func="vds-aeza.order" name="new" img="t-new" type="new" level="user" first="yes"/>
+        <toolbtn func="vds-aeza.edit" name="edit" img="t-edit" type="edit" default="yes"/>
+        <toolbtn func="vds-aeza.delete" name="delete" img="t-delete" type="group" warning="yes">
+          <hide name="status" value="4"/>
+          <hide name="status" value="5" level="user"/>
+          <hide name="scheduledclose" value="on" level="user"/>
+        </toolbtn>
+      </toolgrp>
+      <toolgrp name="edit_sep" separator="yes" after="edit"/>
+      <toolgrp name="resume" after="edit_sep">
+        <toolbtn func="vds-aeza.resume" name="resume" img="t-on" type="group" level="admin"/>
+        <toolbtn func="vds-aeza.suspend" name="suspend" img="t-off" type="group" level="admin"/>
+      </toolgrp>
+      <toolgrp name="resume_sep" separator="yes" after="resume" level="admin"/>
+      <toolgrp name="tool" after="addition_sep">
+        <toolbtn func="vds-aeza.open" name="open" img="t-install" type="edit" level="admin" if="nothing">
+          <show name="status" value="5"/>
+        </toolbtn>
+      </toolgrp>
+      <toolgrp name="tool_sep" separator="yes" after="tool"/>
+      <toolgrp name="filter" after="ticket_sep">
+        <toolbtn func="vds-aeza.setfilter" name="setfilter" img="t-filterhappy" type="groupform" level="admin"/>
+        <toolbtn func="vds-aeza.filter" name="filter" img="t-filter" type="new"/>
+      </toolgrp>
+      <toolgrp name="filter_sep" separator="yes" after="filter"/>
+      <toolgrp name="su" after="filter_sep">
+        <toolbtn func="vds-aeza.su" name="su" img="t-go" type="editlist" level="admin"/>
+      </toolgrp>
+    </toolbar>
+    <coldata>
+      <col name="id" sort="digit" type="data" sorted="-1"/>
+      <col name="pricelist" sort="alpha" type="data"/>
+      <col name="account" sort="alpha" type="data" level="admin"/>
+      <col name="expiredate" sort="alpha" type="data"/>
+      <col name="status_msg" type="msg" sort="alpha"/>
+      <col name="item_status" type="msg" sort="alpha">
+        <setcolor color="yellow" value="1"/>
+        <setcolor color="green" value="2"/>
+        <setcolor color="red" value="3"/>
+        <setcolor color="red" value="3_autosuspend"/>
+        <setcolor color="red" value="3_abusesuspend"/>
+        <setcolor color="red" value="3_employeesuspend"/>
+        <setcolor color="blue" value="4"/>
+        <setcolor color="black" value="5"/>
+        <prop name="warning_message" img="p-error"/>
+        <xprop name="processingmodule_failed" value="on" img="p-error"/>
+        <xprop name="subscription" value="on" img="p-pr3"/>
+        <xprop name="subscription" value="off" img="p-pr2"/>
+        <xprop name="subscription" value="error" img="p-pr1"/>
+      </col>
+      <col name="cost" sort="digit" type="data" stat="yes" nestedlist="expense&amp;item=__elid__" nestedlist_blank="yes" activehint="yes"/>
+    </coldata>
+  </metadata>
+  <lang name="en">
+    <messages name="vds-aeza">
+      <include name="service"/>
+    </messages>
+    <messages name="vds-aeza.filter">
+      <msg name="hide_internal">Hide internal client services </msg>
+      <msg name="active_pricelist">Tariff</msg>
+      <msg name="active">Show only active tariffs</msg>
+      <msg name="expiredate_range">Expiration date </msg>
+      <msg name="orderdate_range">Order date</msg>
+      <msg name="processingnode">Cluster node</msg>
+      <include name="service_status"/>
+      <include name="period.number"/>
+      <msg name="datacenter">Data center </msg>
+      <msg name="expiredate">Expiration date is less than </msg>
+      <msg name="hint_account">Enter a client name</msg>
+      <msg name="hint_datacenter">Show services housed in this data center</msg>
+      <msg name="hint_expiredate">Show services that will be  active until the selected date</msg>
+      <msg name="hint_idlist">Filter the list by the service Id</msg>
+      <msg name="hint_opendate">Show services that are active from the selected date</msg>
+      <msg name="hint_period">Select how long this service will be active (in months)</msg>
+      <msg name="hint_processingmodule">Service processing module</msg>
+      <msg name="hint_project">Show services of the selected provider</msg>
+      <msg name="idlist">Id</msg>
+      <msg name="opendate">Expiration date is large than </msg>
+      <msg name="orderdatefrom">Order date  is larger than</msg>
+      <msg name="orderdateto">Order date is less than </msg>
+      <msg name="period">Period</msg>
+      <msg name="processingmodule">Processing module</msg>
+      <msg name="title">Filter the list of services</msg>
+      <msg name="username">Control panel user </msg>
+    </messages>
+    <messages name="vds-aeza.open">
+      <msg name="description">In this module you can set up the service manually, if services of this type are processed manually, or if an attempt to set up the service automatically failed, and you had to create it manually</msg>
+      <msg name="hint_processingmodule">Processing module for this service</msg>
+      <msg name="processingmodule">Processing module</msg>
+      <msg name="title">Service activation</msg>
+      <msg name="ipaddr">IP</msg>
+    </messages>
+    <messages name="vds-aeza.edit">
+      <msg name="free_addon_info">Changes in parameters that do not require payment will take effect immediately after entering the shopping cart. </msg>
+      <msg name="msg_basket">To shopping cart </msg>
+      <include name="service"/>
+      <msg name="billdaily">Daily charges</msg>
+      <msg name="msg_error_autoprolong_period_disabled">The selected auto-renewal period is not available </msg>
+      <msg name="autoprolong_warning_tmpl">Currently, the service is suspended and cannot be renewed automatically.&lt;br/&gt;Renewal cost till  __expiredate__ is __cost__ __iso____penalty_msg__. To renew the service, click "Add to Cart" </msg>
+      <msg name="autoprolong_warning_penalty_tmpl">, including the downtime fee __penalty__ __iso__ </msg>
+      <msg name="main_domain">Additional parameters </msg>
+      <include name="period.number"/>
+      <msg name="hint_scheduledclose">Service will be deleted after paid period </msg>
+      <msg name="scheduledclose">Scheduled deletion </msg>
+      <msg name="hint_ok_configure">Save service parameters and proceed to the next order </msg>
+      <msg name="licence_agreement">Service agreement </msg>
+      <msg name="title_configure">Configuration of additional parameters </msg>
+      <msg name="licence_link">I have read and accepted the Service agreement </msg>
+      <msg name="msg_ok_configure">Continue </msg>
+      <msg name="msg_save">Save</msg>
+      <msg name="noexpense">Do not perform financial operations </msg>
+      <msg name="hint_noexpense">Select the check box if you don't want to charge/refund a client if his service resources have been changed </msg>
+      <include name="label_service_profile"/>
+      <include name="reboot_warn_include"/>
+      <msg name="msg_open_warning">At this moment the service opening operation is in process. Please wait until it ends or stops to change parameters</msg>
+      <msg name="msg_changepassword">Change password </msg>
+      <msg name="orderinfo">Order information </msg>
+      <msg name="createdate">Order date </msg>
+      <msg name="hint_createdate">Date when the service was ordered </msg>
+      <include name="reboot_include"/>
+      <msg name="no_additional">do not order</msg>
+      <msg name="addon">Add-ons</msg>
+      <msg name="autoprolong">Auto renewal</msg>
+      <msg name="autoprolong_disabled">Disabled</msg>
+      <msg name="clonedfrom">Service has been imported from</msg>
+      <msg name="expiredate">Expiration date</msg>
+      <msg name="extra">For provider</msg>
+      <msg name="hint_autoprolong">Select a period to automatically renew the service upon expiration</msg>
+      <msg name="hint_clonedfrom">This service has been imported from another client. The main service id</msg>
+      <msg name="hint_expiredate">Validity period</msg>
+      <msg name="hint_note">Enter any information related to the service. It will be displayed only to administrators</msg>
+      <msg name="hint_opendate">Activation date</msg>
+      <msg name="hint_processingmodule">Processing module</msg>
+      <msg name="note">Comment</msg>
+      <msg name="opendate">Creation date</msg>
+      <msg name="processingmodule">Processing module</msg>
+      <msg name="service_profile">Service profiles</msg>
+      <msg name="title">Edit properties of the selected service</msg>
+      <msg name="name">Title</msg>
+      <msg name="login">Login</msg>
+      <msg name="passwd">password</msg>
+      <msg name="ipaddr">IP</msg>
+      <msg name="os">Operating system</msg>
+    </messages>
+    <messages name="vds-aeza.order.pricelist">
+      <msg name="pricelist_eol_trial">Trial period exceeds the expiration date of the tariff</msg>
+      <msg name="title_generic">Order</msg>
+      <msg name="msg_transition">Order </msg>
+      <msg name="msg_price_requested">The price has been requested </msg>
+      <msg name="msg_error_pricelist_not_match_datacenter">Price list does not match the data-center</msg>
+      <msg name="trial_expire_msg">till __expiredate__</msg>
+      <msg name="less_days">day|days </msg>
+      <msg name="hint_order">Enter order parameters </msg>
+      <msg name="msg_quickorder">Properties </msg>
+      <msg name="hint_quickorder">Enter order parameters </msg>
+      <msg name="msg_quickbasket">Add to Cart </msg>
+      <msg name="hint_quickbasket">Add to Cart </msg>
+      <msg name="pricelist_no_trial_ordered">Trial period has been already ordered</msg>
+      <msg name="pricelist_no_trial_max">You cannot order a trial now. Try again later </msg>
+      <msg name="setup_period_msg"> + __cost__  setup fee </msg>
+      <msg name="msg_itemtype_back">&lt;&lt; Back </msg>
+      <msg name="hint_datacenter">Select a data center where the service will be located </msg>
+      <msg name="fpricelist">Filter</msg>
+      <msg name="hint_period">Service order period </msg>
+      <include name="step_period"/>
+      <msg name="datacenter">Select a data center</msg>
+      <msg name="days">day|days</msg>
+      <msg name="min_period_msg"> (minimum order period __count__ __minperiod__)</msg>
+      <msg name="months">month|months</msg>
+      <msg name="msg_error_cant_order_trial">You cannot order a trial version for the selected tariff plan. Select a new order period</msg>
+      <msg name="msg_error_disabled_period">Choose  another billing period for the selected tariff plan</msg>
+      <msg name="msg_order">Order</msg>
+      <msg name="msg_price_request">Request pricing </msg>
+      <msg name="period">Payment period</msg>
+      <msg name="pricelist">Tariff plan</msg>
+      <msg name="pricelist_no_period">You cannot order this tariff plan for the selected period</msg>
+      <msg name="title">Order service</msg>
+      <msg name="trial_msg">for  __days__</msg>
+      <msg name="wizard_title">Tariff plan</msg>
+    </messages>
+    <messages name="vds-aeza.order.param">
+      <msg name="order_count">Number of services available for order</msg>
+      <msg name="hint_order_count">The number of services that will be added to the Cart. Please note that the services in the Cart will have the same parameters specified in this form</msg>
+      <msg name="msg_error_billorder_closed">The order __value__ cannot be modified </msg>
+      <include name="service"/>
+      <include name="service.edit"/>
+      <include name="service.order.pricelist"/>
+      <msg name="no_additional">do not order</msg>
+      <msg name="licence_agreement_data">I have read and agreed to the terms of the License agreement</msg>
+      <msg name="licence_link">License agreement</msg>
+      <msg name="msg_finish">Add to cart</msg>
+      <msg name="title">Order service</msg>
+      <msg name="wizard_title">Service parameters</msg>
+      <msg name="name">Title</msg>
+      <msg name="os">Operating system</msg>
+    </messages>
+  </lang>
+  <lang name="ru">
+    <messages name="vds-aeza">
+      <include name="service"/>
+    </messages>
+    <messages name="vds-aeza.filter">
+      <msg name="processingnode">Узел кластера</msg>
+      <msg name="hint_account">Наименование клиента</msg>
+      <msg name="title">Фильтр по списку услуг</msg>
+      <msg name="hint_project">Отобрать услуги, подключенные к провайдеру</msg>
+      <msg name="hint_idlist">Фильтр по идентификатору услуги в системе</msg>
+      <msg name="idlist">Id</msg>
+      <msg name="hint_opendate">Отображать услуги, действующие от указанной даты</msg>
+      <msg name="opendate">Действует до даты больше</msg>
+      <msg name="hint_expiredate">Отображать услуги, действующие до указанной даты</msg>
+      <msg name="expiredate">Действует до даты меньше</msg>
+      <msg name="hint_processingmodule">Модуль обработки услуги</msg>
+      <msg name="processingmodule">Модуль обработки</msg>
+      <msg name="hint_datacenter">Отображать услуги, относящиеся к указанному дата-центру</msg>
+      <msg name="datacenter">Дата-центр</msg>
+      <msg name="hint_period">Период действия услуги в месяцах</msg>
+      <msg name="period">Период</msg>
+      <msg name="username">Пользователь в панели</msg>
+      <msg name="orderdatefrom">Дата заказа больше</msg>
+      <msg name="orderdateto">Дата заказа меньше</msg>
+      <msg name="expiredate_range">Действует до</msg>
+      <msg name="orderdate_range">Дата заказа</msg>
+      <msg name="active">Показывать только активные тарифы</msg>
+      <msg name="active_pricelist">Тариф</msg>
+      <msg name="hide_internal">Скрыть услуги внутренних клиентов</msg>
+      <include name="period.number"/>
+      <include name="service_status"/>
+    </messages>
+    <messages name="vds-aeza.open">
+      <msg name="title">Открытие услуги</msg>
+      <msg name="description">В данном модуле вы можете вручную обработать услугу. Это необходимо если услуги данного типа обрабатываются вручную или во время автоматической обработки возникли проблемы и услугу пришлось создавать вручную.</msg>
+      <msg name="processingmodule">Модуль обработки</msg>
+      <msg name="hint_processingmodule">Модуль обработки, назначенный услуге</msg>
+      <msg name="ipaddr">IP</msg>
+    </messages>
+    <messages name="vds-aeza.edit">
+      <include name="period.number"/>
+      <include name="service"/>
+      <msg name="title">Редактирование услуги</msg>
+      <msg name="title_configure">Настройка дополнительных параметров</msg>
+      <msg name="msg_ok_configure">Продолжить</msg>
+      <msg name="msg_save">Сохранить</msg>
+      <msg name="hint_ok_configure">Сохранить параметры услуги и перейти к следующей услуге в заказе</msg>
+      <msg name="licence_agreement">Условия предоставления услуг</msg>
+      <msg name="licence_link">Я прочитал и согласен с условиями предоставления услуг</msg>
+      <msg name="main_domain">Дополнительные параметры</msg>
+      <msg name="free_addon_info">Изменения параметров, которые не требуют оплаты, вступят в силу сразу после перехода в корзину</msg>
+      <msg name="msg_error_autoprolong_period_disabled">Выбранный период автопродления недоступен для заказа</msg>
+      <msg name="msg_open_warning">В данный момент выполняется операция открытия услуги, дождитесь выполнения или остановки операции, чтобы изменить параметры</msg>
+      <msg name="addon">Дополнительно</msg>
+      <msg name="extra">Для провайдера</msg>
+      <msg name="service_profile">Профили услуги</msg>
+      <msg name="processingmodule">Модуль обработки</msg>
+      <msg name="hint_processingmodule">Модуль обработки</msg>
+      <msg name="note">Комментарий</msg>
+      <msg name="hint_note">Комментарий к услуге, виден только сотрудникам провайдера</msg>
+      <msg name="opendate">Дата создания</msg>
+      <msg name="hint_opendate">Дата фактического начала действия услуги</msg>
+      <msg name="createdate">Дата заказа</msg>
+      <msg name="hint_createdate">Дата заказа услуги</msg>
+      <msg name="expiredate">Действует до</msg>
+      <msg name="hint_expiredate">Срок действия услуги</msg>
+      <msg name="clonedfrom">Услуга склонирована из</msg>
+      <msg name="hint_clonedfrom">Услуга была перенесена от другого клиента. Код основной услуги.</msg>
+      <msg name="autoprolong_disabled">Отключено</msg>
+      <msg name="autoprolong">Автоматическое продление</msg>
+      <msg name="no_additional">не заказывать дополнительно</msg>
+      <msg name="hint_autoprolong">Выберите период, на который услуга будет продляться автоматически при окончании срока действия</msg>
+      <msg name="orderinfo">Информация о заказе</msg>
+      <msg name="msg_changepassword">Сменить пароль</msg>
+      <msg name="noexpense">Не производить финансовых операций</msg>
+      <msg name="hint_noexpense">Поставьте флаг, если не нужно списывать/возвращать деньги за текущую операцию изменения ресурсов</msg>
+      <msg name="scheduledclose">Запланировано удаление</msg>
+      <msg name="hint_scheduledclose">Запланировано удаление по окончанию оплаченного периода</msg>
+      <msg name="autoprolong_warning_tmpl">В данный момент услуга остановлена и не будет продлена автоматически.&lt;br/&gt;Стоимость продления до __expiredate__ составит __cost__ __iso____penalty_msg__. Вы можете продлить услугу самостоятельно, воспользовавшись кнопкой "В корзину"</msg>
+      <msg name="autoprolong_warning_penalty_tmpl">, включая штраф за время простоя в размере __penalty__ __iso__</msg>
+      <include name="reboot_include"/>
+      <include name="reboot_warn_include"/>
+      <include name="label_service_profile"/>
+      <msg name="msg_basket">В корзину</msg>
+      <msg name="billdaily">Ежедневное списание</msg>
+      <msg name="name">Название</msg>
+      <msg name="login">Логин</msg>
+      <msg name="passwd">Пароль</msg>
+      <msg name="ipaddr">IP</msg>
+      <msg name="os">Операционная система</msg>
+    </messages>
+    <messages name="vds-aeza.order.pricelist">
+      <msg name="pricelist">Тарифный план</msg>
+      <msg name="title">Заказ услуги</msg>
+      <msg name="title_generic">Заказ </msg>
+      <msg name="wizard_title">Тарифный план</msg>
+      <msg name="msg_order">Заказать</msg>
+      <msg name="msg_transition">Заказать</msg>
+      <msg name="msg_price_request">Запросить цену</msg>
+      <msg name="msg_price_requested">Цена запрошена</msg>
+      <msg name="msg_quickbasket">В корзину</msg>
+      <msg name="msg_quickorder">Параметры</msg>
+      <msg name="hint_order">Указать параметры заказа</msg>
+      <msg name="hint_quickbasket">Добавить в корзину</msg>
+      <msg name="hint_quickorder">Указать параметры заказа</msg>
+      <msg name="fpricelist">Фильтр</msg>
+      <msg name="datacenter">Выберите дата-центр</msg>
+      <msg name="hint_datacenter">Дата-центр, в котором будет открыта услуга</msg>
+      <msg name="period">Период оплаты</msg>
+      <msg name="msg_itemtype_back">&lt;&lt; Назад</msg>
+      <msg name="hint_period">Период, на который будет заказана услуга</msg>
+      <msg name="msg_error_disabled_period">Для заказа выбранного тарифного плана выберите другой период оплаты</msg>
+      <msg name="msg_error_cant_order_trial">Вы не можете заказать триальную версию для выбранного тарифного плана. Выберите другой период заказа.</msg>
+      <msg name="days">день|дня|дней</msg>
+      <msg name="less_days">дня|дней|дней</msg>
+      <msg name="months">месяц|месяца|месяцев</msg>
+      <msg name="trial_msg">за __days__</msg>
+      <msg name="trial_expire_msg">до __expiredate__</msg>
+      <msg name="min_period_msg"> (минимальный период заказа __count__ __minperiod__)</msg>
+      <msg name="setup_period_msg"> + __cost__ за установку</msg>
+      <msg name="pricelist_no_period">Нельзя заказать на выбранный период оплаты</msg>
+      <msg name="pricelist_no_trial_ordered">Триальный период уже использован</msg>
+      <msg name="pricelist_no_trial_max">Триальный период в данный момент недоступен. Попробуйте позже</msg>
+      <msg name="pricelist_eol_trial">Триальный период превышает срок окончания действия тарифа</msg>
+      <msg name="msg_error_pricelist_not_match_datacenter">Прайс-лист не соответствует дата-центру</msg>
+      <include name="step_period"/>
+    </messages>
+    <messages name="vds-aeza.order.param">
+      <include name="service.order.pricelist"/>
+      <include name="service"/>
+      <include name="service.edit"/>
+      <msg name="title">Заказ услуги</msg>
+      <msg name="wizard_title">Параметры услуги</msg>
+      <msg name="msg_finish">В корзину</msg>
+      <msg name="licence_link">Условия предоставления услуг</msg>
+      <msg name="licence_agreement_data">Я прочитал и согласен с условиями предоставления услуг</msg>
+      <msg name="no_additional">не заказывать дополнительно</msg>
+      <msg name="msg_error_billorder_closed">Заказ №__value__ недоступен для редактирования</msg>
+      <msg name="order_count">Количество услуг, доступных для заказа</msg>
+      <msg name="hint_order_count">Количество услуг, которые будут добавлены в корзину. Обратите внимание, что у добавляемых в корзину услуг будут одинаковые параметры, указанные на данной форме</msg>
+      <msg name="name">Название</msg>
+      <msg name="os">Операционная система</msg>
+    </messages>
+  </lang>
+  <metadata name="vds-aeza.filter" type="form">
+    <form>
+      <field name="id">
+        <input type="text" name="id" sqlname="i.id" zoom="5"/>
+      </field>
+      <field name="account" level="admin">
+        <input type="text" name="account" sqlname="a.name"/>
+      </field>
+      <field name="account_id" level="admin">
+        <input type="text" name="account_id" zoom="5" sqlname="a.id"/>
+      </field>
+      <field name="project" level="admin">
+        <select name="project" type="multiple" sqlname="p.project"/>
+      </field>
+      <field name="active" level="admin+">
+        <input name="active" type="checkbox">
+          <if value="on" hide="pricelist"/>
+          <if value="off" hide="active_pricelist"/>
+        </input>
+      </field>
+      <field name="pricelist">
+        <select name="pricelist" type="multiple" sqlname="p.id"/>
+      </field>
+      <field name="active_pricelist" level="admin+">
+        <select name="active_pricelist" type="multiple" sqlname="p.id"/>
+      </field>
+      <field name="period">
+        <select name="period" type="multiple" sqlname="i.period"/>
+      </field>
+      <field name="status_msg">
+        <select name="status_msg" sorted="asc" type="multiple"/>
+      </field>
+      <field name="status">
+        <select name="status" sorted="asc" type="multiple" sqlname="i.status"/>
+      </field>
+      <field name="opendate">
+        <input type="text" name="opendate" delimiter=" " check="date" date="yes" sql="i.expiredate &gt;=__QVALUE__" range_name="expiredate_range" range_boundary="left"/>
+      </field>
+      <field name="expiredate">
+        <input type="text" name="expiredate" delimiter=" " check="date" date="yes" sql="i.expiredate &lt;=__QVALUE__" range_name="expiredate_range" range_boundary="right"/>
+      </field>
+      <field name="orderdatefrom">
+        <input type="text" name="orderdatefrom" delimiter=" " check="date" date="yes" sql="i.createdate &gt;=__QVALUE__" range_name="orderdate_range"/>
+      </field>
+      <field name="orderdateto">
+        <input type="text" name="orderdateto" delimiter=" " check="date" date="yes" sql="i.createdate &lt;=__QVALUE__" range_name="orderdate_range"/>
+      </field>
+      <field name="datacenter">
+        <select name="datacenter" type="multiple" sqlname="pm.datacenter"/>
+      </field>
+      <field name="processingmodule" level="admin">
+        <select name="processingmodule" type="multiple" sqlname="pm.id"/>
+      </field>
+    </form>
+  </metadata>
+  <metadata name="vds-aeza.open" type="form">
+    <form title="name">
+      <field name="desc" fullwidth="yes" noname="yes">
+        <textdata name="description" type="msg"/>
+      </field>
+      <field name="processingmodule">
+        <select name="processingmodule"/>
+      </field>
+    </form>
+  </metadata>
+  <metadata name="vds-aeza.edit" type="form">
+    <form title="title_name">
+      <page name="main">
+        <field name="autoprolong" first="yes">
+          <select name="autoprolong" setvalues="yes"/>
+          <input name="hide_autoprolong_warning" type="hidden">
+            <if empty="yes" hide="autoprolong_warning"/>
+          </input>
+        </field>
+        <field name="autoprolong_warning" noname="yes" formwidth="yes">
+          <textdata name="autoprolong_warning" type="data" warning="yes"/>
+        </field>
+        <field name="stored_method">
+          <select name="stored_method"/>
+          <input name="hide_stored_method" type="hidden">
+            <if empty="no" hide="stored_method"/>
+          </input>
+          <input name="autoprolong_available" type="hidden"/>
+        </field>
+        <field name="stored_method_warning" noname="yes" formwidth="yes">
+          <textdata name="stored_method_warning" type="data" warning="yes"/>
+          <input name="show_stored_method_warning" type="hidden">
+            <if empty="yes" hide="stored_method_warning"/>
+          </input>
+        </field>
+        <field name="processingmodule">
+          <select name="processingmodule" level="admin+"/>
+        </field>
+        <field name="createdate">
+          <input name="createdate" type="text" date="yes" check="date" readonly="yes"/>
+          <textdata name="createdate" type="data"/>
+          <input type="hidden" name="showorderinfo">
+            <if empty="yes" hide="orderinfo"/>
+            <if empty="yes" hide="msg_orderinfo"/>
+          </input>
+        </field>
+        <field name="opendate">
+          <input name="opendate" type="text" date="yes" check="date" readonly="yes"/>
+          <textdata name="opendate" type="data"/>
+          <input type="hidden" name="showorderinfo">
+            <if empty="yes" hide="orderinfo"/>
+            <if empty="yes" hide="msg_orderinfo"/>
+          </input>
+        </field>
+        <field name="expiredate">
+          <input name="expiredate" type="text" date="yes" check="date" readonly="yes" setvalues="yes"/>
+          <textdata name="expiredate" type="data"/>
+          <input type="hidden" name="redirect"/>
+        </field>
+        <field name="scheduledclose" level="admin+">
+          <input type="checkbox" name="scheduledclose"/>
+        </field>
+        <field name="clonedfrom">
+          <textdata name="clonedfrom" type="data"/>
+        </field>
+        <field name="description">
+          <input type="hidden" name="description"/>
+        </field>
+      </page>
+      <page name="service_profile"/>
+      <page name="addon">
+        <field name="show_rebootwarn" customfield="yes">
+          <input type="hidden" name="needreboot">
+            <if empty="yes" hide="rebootwarn"/>
+            <if empty="yes" hide="reboot"/>
+          </input>
+        </field>
+        <field name="rebootwarn" fullwidth="yes" noname="yes">
+          <textdata name="rebootwarn" type="msg" warning="yes"/>
+        </field>
+        <field name="reboot" level="user" customfield="yes">
+          <input type="checkbox" name="reboot"/>
+        </field>
+      </page>
+      <page name="extra">
+        <field name="note" level="admin" fullwidth="yes">
+          <textarea name="note" rows="4"/>
+        </field>
+      </page>
+      <page name="orderinfo">
+        <field name="free_addon_info" fullwidth="yes" noname="yes">
+          <textdata name="free_addon_info" type="msg"/>
+        </field>
+        <field name="orderinfo" fullwidth="yes" noname="yes">
+          <textdata name="orderinfo" type="data"/>
+        </field>
+        <field name="noexpense" level="admin+">
+          <input name="hide_noexpense" type="hidden">
+            <if empty="no" hide="noexpense"/>
+          </input>
+          <input type="checkbox" name="noexpense"/>
+        </field>
+      </page>
+    </form>
+  </metadata>
+  <metadata name="vds-aeza.order.pricelist" type="form" selficon="service">
+    <form title="name">
+      <field name="datacenter" fullwidth="yes" fixed="yes">
+        <select name="datacenter" type="radio" setvalues="blocking" inline="yes"/>
+      </field>
+      <field name="period" fixed="yes">
+        <input type="hidden" name="skipbasket"/>
+        <input type="hidden" name="newbasket"/>
+        <input type="hidden" name="stylesheet"/>
+        <input type="hidden" name="itemtype"/>
+        <select name="period" type="radio" setvalues="yes" inline="yes"/>
+      </field>
+      <field name="tariflist" noname="yes">
+        <list name="tariflist" key="pricelist">
+          <col name="image" type="img" width="32px" height="32px"/>
+          <col name="desc" type="data"/>
+          <col name="price" align="right" type="data"/>
+          <col name="action" type="button" align="right"/>
+        </list>
+        <listfilter name="fpricelist" src_list="tariflist" src_field="filter" fixed="yes"/>
+      </field>
+    </form>
+  </metadata>
+  <metadata name="vds-aeza.order.param" type="form" selficon="service">
+    <form title="name">
+      <field name="autoprolong" first="yes">
+        <select name="autoprolong" setvalues="yes"/>
+      </field>
+      <field name="stored_method">
+        <select name="stored_method"/>
+        <input name="hide_stored_method" type="hidden">
+          <if empty="no" hide="stored_method"/>
+        </input>
+        <input name="autoprolong_available" type="hidden"/>
+      </field>
+      <field name="stored_method_warning" noname="yes" formwidth="yes">
+        <textdata name="stored_method_warning" type="data" warning="yes"/>
+        <input name="show_stored_method_warning" type="hidden">
+          <if empty="yes" hide="stored_method_warning"/>
+        </input>
+      </field>
+    </form>
+  </metadata>
+</mgrdata>
